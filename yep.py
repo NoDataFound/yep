@@ -16,8 +16,11 @@ access_token_secret = os.environ.get('ACCESS_SECRET')
 
 if not consumer_key:
     consumer_key = st.text_input("Enter CONSUMER_KEY")
+if not consumer_secret:
     consumer_secret = st.text_input("Enter CONSUMER_SECRET")
+if not access_token:
     access_token = st.text_input("Enter ACCESS_TOKEN")
+if not access_token_secret:  
     access_token_secret = st.text_input("Enter ACCESS_SECRET")
     set_key('.env', 'CONSUMER_KEY', consumer_key)
 
