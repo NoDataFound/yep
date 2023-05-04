@@ -86,6 +86,7 @@ class StreamListener(tweepy.StreamListener):
         if query:
             matches = search_friends(user, query, search_type)
             send_tweet(user, matches)
+            st.write(send_tweet)
 
     def on_error(self, status_code):
         if status_code == 420:
