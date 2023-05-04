@@ -75,8 +75,7 @@ def send_tweet(user, matches):
         match_list = ", ".join(f"@{m}" for m in matches)
         tweet = f"Yep, @{user} you know {match_list}."
         api.update_status(tweet)
-
-class StreamListener(tweepy.StreamListener):
+class MyStreamListener(StreamListener):
     def on_status(self, status):
         user = status.user.screen_name
         text = status.text
@@ -86,7 +85,7 @@ class StreamListener(tweepy.StreamListener):
         if query:
             matches = search_friends(user, query, search_type)
             send_tweet(user, matches)
-            st.write(send_tweet)
+            st.write(f"Found a tweet from @{user}: {text}")
 
     def on_error(self, status_code):
         if status_code == 420:
@@ -97,4 +96,6 @@ stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
 
 # Start the stream
 if st.button("Start Listening"):
+    st.write("Bot is now listening...")
     stream.filter(track=phrases, is_async=True)
+
