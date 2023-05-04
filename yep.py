@@ -3,9 +3,9 @@ import streamlit as st
 import re
 import requests
 from dotenv import load_dotenv, set_key
+from tweepy.streaming import StreamListener
 
 import os
-
 
 load_dotenv('.env')
 
@@ -24,15 +24,11 @@ if not access_token_secret:
     access_token_secret = st.text_input("Enter ACCESS_SECRET")
     set_key('.env', 'CONSUMER_KEY', consumer_key)
 
-
 os.environ['CONSUMER_KEY'] = consumer_key
 os.environ['CONSUMER_SECRET'] = consumer_secret
 os.environ['ACCESS_TOKEN'] = access_token
 os.environ['ACCESS_SECRET'] = access_token_secret
-# Enter your Twitter API keys and access tokens
 
-
-# Authenticate to Twitter
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
@@ -75,6 +71,7 @@ def send_tweet(user, matches):
         match_list = ", ".join(f"@{m}" for m in matches)
         tweet = f"Yep, @{user} you know {match_list}."
         api.update_status(tweet)
+
 class MyStreamListener(StreamListener):
     def on_status(self, status):
         user = status.user.screen_name
@@ -85,17 +82,15 @@ class MyStreamListener(StreamListener):
         if query:
             matches = search_friends(user, query, search_type)
             send_tweet(user, matches)
-            st.write(f"Found a tweet from @{user}: {text}")
+            st.write(send_tweet)
 
     def on_error(self, status_code):
         if status_code == 420:
             return False
 
-stream_listener = StreamListener()
+stream_listener = MyStreamListener()
 stream = tweepy.Stream(auth=api.auth, listener=stream_listener)
 
-# Start the stream
 if st.button("Start Listening"):
     st.write("Bot is now listening...")
     stream.filter(track=phrases, is_async=True)
-
